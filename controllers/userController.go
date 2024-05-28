@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"github.com/labstack/echo/v4"
 	"github.com/yigitataben/student_scheduler/services"
 	"net/http"
 )
@@ -9,8 +10,8 @@ type UserController struct {
 	UserService services.UserService
 }
 
-func NewUserController(userService services.UserService) *UserController {
-	return &UserController{UserService: userService}
+func NewUserController(userService *services.UserService) *UserController {
+	return &UserController{UserService: *userService}
 }
 
 func (uc *UserController) SignUp(c echo.Context) error {

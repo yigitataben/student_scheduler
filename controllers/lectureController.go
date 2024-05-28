@@ -1,6 +1,8 @@
 package controllers
 
 import (
+	"errors"
+	"github.com/labstack/echo/v4"
 	"github.com/yigitataben/student_scheduler/models"
 	"github.com/yigitataben/student_scheduler/services"
 	"net/http"
@@ -10,13 +12,13 @@ type LectureController struct {
 	LectureService services.LectureService
 }
 
-func NewLectureController(lectureService services.LectureService) *LectureController {
-	return &LectureController{LectureService: lectureService}
+func NewLectureController(lectureService *services.LectureService) *LectureController {
+	return &LectureController{LectureService: *lectureService}
 }
 
 func (lc *LectureController) CreateLectures(c echo.Context) error {
 	type LectureInput struct {
-		LectureName string `json:"Lecture_name"`
+		LectureName string `json:"LectureName"`
 	}
 
 	var lecturesInput []LectureInput
@@ -53,7 +55,7 @@ func (lc *LectureController) GetLecture(c echo.Context) error {
 	ID := c.Param("id")
 	lecture, err := lc.LectureService.GetLecture(ID)
 	if err != nil {
-		if err == services.ErrLectureNotFound {
+		if errors.Is(err, services.ErrLectureNotFound) {
 			return c.JSON(http.StatusNotFound, echo.Map{"error": "Lecture not found"})
 		}
 		return c.JSON(http.StatusInternalServerError, echo.Map{"error": "Failed to retrieve lecture"})
@@ -65,7 +67,7 @@ func (lc *LectureController) DeleteLecture(c echo.Context) error {
 	ID := c.Param("id")
 	err := lc.LectureService.DeleteLecture(ID)
 	if err != nil {
-		if err == services.ErrLectureNotFound {
+		if errors.Is(err, services.ErrLectureNotFound) {
 			return c.JSON(http.StatusNotFound, echo.Map{"error": "Lecture not found"})
 		}
 		return c.JSON(http.StatusInternalServerError, echo.Map{"error": "Failed to delete lecture"})

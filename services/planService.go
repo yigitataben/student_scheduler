@@ -15,8 +15,8 @@ type PlanService struct {
 	PlanRepository repositories.PlanRepository
 }
 
-func NewPlanService(planRepository repositories.PlanRepository) *PlanService {
-	return &PlanService{PlanRepository: planRepository}
+func NewPlanService(planRepository *repositories.PlanRepository) *PlanService {
+	return &PlanService{PlanRepository: *planRepository}
 }
 
 func (s *PlanService) CreatePlan(plan *models.Plan) error {

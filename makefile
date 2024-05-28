@@ -2,7 +2,7 @@
 
 # Variables
 APP_NAME := student_scheduler
-PORT := 8080
+PORT := 3000
 
 # Go commands
 GOCMD := go

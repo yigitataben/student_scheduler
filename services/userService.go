@@ -12,11 +12,11 @@ var (
 )
 
 type UserService struct {
-	UserRepository repositories.UserRepository
+	UserRepository *repositories.UserRepository
 }
 
-func NewUserService(userRepo repositories.UserRepository) *UserService {
-	return &UserService{UserRepository: userRepo}
+func NewUserService(userRepository *repositories.UserRepository) *UserService {
+	return &UserService{UserRepository: userRepository}
 }
 
 func (s *UserService) SignUp(email, password string) error {
@@ -35,7 +35,7 @@ func (s *UserService) GetAllUsers() ([]models.User, error) {
 func (s *UserService) GetUserByID(id string) (*models.User, error) {
 	user, err := s.UserRepository.FindByID(id)
 	if err != nil {
-		if errors.Is(err, repositories.ErrRecordNotFound) {
+		if errors.Is(err, repositories.ErrUserRecordNotFound) {
 			return nil, ErrUserNotFound
 		}
 		return nil, err
@@ -46,7 +46,7 @@ func (s *UserService) GetUserByID(id string) (*models.User, error) {
 func (s *UserService) UpdateUser(id, email, password string) (*models.User, error) {
 	user, err := s.UserRepository.FindByID(id)
 	if err != nil {
-		if errors.Is(err, repositories.ErrRecordNotFound) {
+		if errors.Is(err, repositories.ErrUserRecordNotFound) {
 			return nil, ErrUserNotFound
 		}
 		return nil, err
@@ -66,7 +66,7 @@ func (s *UserService) UpdateUser(id, email, password string) (*models.User, erro
 func (s *UserService) DeleteUser(id string) error {
 	err := s.UserRepository.Delete(id)
 	if err != nil {
-		if errors.Is(err, repositories.ErrRecordNotFound) {
+		if errors.Is(err, repositories.ErrUserRecordNotFound) {
 			return ErrUserNotFound
 		}
 		return err

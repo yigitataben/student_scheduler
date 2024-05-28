@@ -7,7 +7,7 @@ import (
 )
 
 var (
-	ErrRecordNotFound = errors.New("record not found")
+	ErrUserRecordNotFound = errors.New("record not found")
 )
 
 type UserRepository struct {
@@ -32,7 +32,7 @@ func (r *UserRepository) FindByID(id string) (*models.User, error) {
 	var user models.User
 	err := r.DB.First(&user, id).Error
 	if errors.Is(err, gorm.ErrRecordNotFound) {
-		return nil, ErrRecordNotFound
+		return nil, ErrUserRecordNotFound
 	}
 	return &user, err
 }
@@ -45,7 +45,7 @@ func (r *UserRepository) Delete(id string) error {
 	var user models.User
 	err := r.DB.First(&user, id).Error
 	if errors.Is(err, gorm.ErrRecordNotFound) {
-		return ErrRecordNotFound
+		return ErrUserRecordNotFound
 	}
 	return r.DB.Unscoped().Delete(&user).Error
 }

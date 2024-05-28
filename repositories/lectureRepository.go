@@ -7,7 +7,7 @@ import (
 )
 
 var (
-	ErrRecordNotFound = errors.New("record not found")
+	ErrLectureRecordNotFound = errors.New("record not found")
 )
 
 type LectureRepository struct {
@@ -32,7 +32,7 @@ func (r *LectureRepository) FindByID(id string) (*models.Lecture, error) {
 	var lecture models.Lecture
 	err := r.DB.First(&lecture, id).Error
 	if errors.Is(err, gorm.ErrRecordNotFound) {
-		return nil, ErrRecordNotFound
+		return nil, ErrLectureRecordNotFound
 	}
 	return &lecture, err
 }
@@ -41,7 +41,7 @@ func (r *LectureRepository) Delete(id string) error {
 	var lecture models.Lecture
 	err := r.DB.First(&lecture, id).Error
 	if errors.Is(err, gorm.ErrRecordNotFound) {
-		return ErrRecordNotFound
+		return ErrLectureRecordNotFound
 	}
 	return r.DB.Unscoped().Delete(&lecture).Error
 }

@@ -1,23 +1,35 @@
 package main
 
 import (
-	"github.com/labstack/echo/v4/middleware"
-	"github.com/yigitataben/student_scheduler/initializers"
-	"github.com/yigitataben/student_scheduler/routes"
 	"os"
+
+	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
+	"github.com/yigitataben/student_scheduler/controllers"
+	"github.com/yigitataben/student_scheduler/initializers"
+	"github.com/yigitataben/student_scheduler/repositories"
+	"github.com/yigitataben/student_scheduler/routes"
+	"github.com/yigitataben/student_scheduler/services"
 )
 
-func init() {
-	err := initializers.LoadEnvVariables()
-	if err != nil {
-		return
-	}
+func main() {
+	initializers.LoadEnvVariables()
 	initializers.ConnectToDB()
 	initializers.SyncDB()
-}
 
-func main() {
 	e := echo.New()
+
+	userRepository := repositories.NewUserRepository(initializers.DB)
+	userService := services.NewUserService(userRepository)
+	userController := controllers.NewUserController(userService)
+
+	lectureRepository := repositories.NewLectureRepository(initializers.DB)
+	lectureService := services.NewLectureService(lectureRepository)
+	lectureController := controllers.NewLectureController(lectureService)
+
+	planRepository := repositories.NewPlanRepository(initializers.DB)
+	planService := services.NewPlanService(planRepository)
+	planController := controllers.NewPlanController(planService)
 
 	// CORS middleware
 	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
@@ -27,9 +39,9 @@ func main() {
 	}))
 
 	// Register routes
-	routes.UserRoutes(e)
-	routes.LectureRoutes(e)
-	routes.PlanRoutes(e)
+	routes.UserRoutes(e, userController)
+	routes.LectureRoutes(e, lectureController)
+	routes.PlanRoutes(e, planController)
 
 	// Start server
 	port := os.Getenv("PORT")

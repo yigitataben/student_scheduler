@@ -1,18 +1,13 @@
 package initializers
 
 import (
-	"gorm.io/driver/mysql"
-	"gorm.io/gorm"
-	"os"
+	"github.com/joho/godotenv"
+	"log"
 )
 
-var DB *gorm.DB
-
-func ConnectToDB() {
-	var err error
-	dsn := os.Getenv("DB")
-	DB, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
+func LoadEnvVariables() {
+	err := godotenv.Load()
 	if err != nil {
-		panic("Failed to connect database.")
+		log.Fatal("Error loading .env file")
 	}
 }

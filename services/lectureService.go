@@ -14,8 +14,8 @@ type LectureService struct {
 	LectureRepository repositories.LectureRepository
 }
 
-func NewLectureService(lectureRepo repositories.LectureRepository) *LectureService {
-	return &LectureService{LectureRepository: lectureRepo}
+func NewLectureService(lectureRepository *repositories.LectureRepository) *LectureService {
+	return &LectureService{LectureRepository: *lectureRepository}
 }
 
 func (s *LectureService) CreateLectures(lectures []models.Lecture) error {
@@ -29,7 +29,7 @@ func (s *LectureService) GetAllLectures() ([]models.Lecture, error) {
 func (s *LectureService) GetLecture(id string) (*models.Lecture, error) {
 	lecture, err := s.LectureRepository.FindByID(id)
 	if err != nil {
-		if errors.Is(err, repositories.ErrRecordNotFound) {
+		if errors.Is(err, repositories.ErrUserRecordNotFound) {
 			return nil, ErrLectureNotFound
 		}
 		return nil, err
@@ -40,7 +40,7 @@ func (s *LectureService) GetLecture(id string) (*models.Lecture, error) {
 func (s *LectureService) DeleteLecture(id string) error {
 	err := s.LectureRepository.Delete(id)
 	if err != nil {
-		if errors.Is(err, repositories.ErrRecordNotFound) {
+		if errors.Is(err, repositories.ErrUserRecordNotFound) {
 			return ErrLectureNotFound
 		}
 		return err
