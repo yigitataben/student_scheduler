@@ -1,72 +1,91 @@
 package controllers
 
 import (
+	"net/http"
+	"strconv"
+
 	"github.com/labstack/echo/v4"
 	"github.com/yigitataben/student_scheduler/services"
-	"net/http"
 )
 
 type UserController struct {
-	UserService services.UserService
+	UserService *services.UserService
 }
 
 func NewUserController(userService *services.UserService) *UserController {
-	return &UserController{UserService: *userService}
+	return &UserController{UserService: userService}
 }
 
 func (uc *UserController) SignUp(c echo.Context) error {
-	var body struct {
+	var userSignUpRequest struct {
 		Email    string `json:"email"`
 		Password string `json:"password"`
 	}
-	if err := c.Bind(&body); err != nil {
+	if err := c.Bind(&userSignUpRequest); err != nil {
 		return c.JSON(http.StatusBadRequest, echo.Map{"error": "Failed to read body"})
 	}
-	err := uc.UserService.SignUp(body.Email, body.Password)
+	err := uc.UserService.SignUp(userSignUpRequest.Email, userSignUpRequest.Password)
 	if err != nil {
-		return c.JSON(http.StatusBadRequest, echo.Map{"error": "Failed to create user"})
+		return c.JSON(http.StatusBadRequest, echo.Map{"error": "Failed to sign up user"})
 	}
-	return c.JSON(http.StatusOK, echo.Map{})
+	return c.JSON(http.StatusCreated, echo.Map{"message": "User signed up successfully"})
 }
 
 func (uc *UserController) GetAllUsers(c echo.Context) error {
 	users, err := uc.UserService.GetAllUsers()
 	if err != nil {
-		return c.JSON(http.StatusInternalServerError, echo.Map{"error": "Failed to retrieve users"})
+		return c.JSON(http.StatusInternalServerError, echo.Map{"error": "Failed to fetch users"})
 	}
-	return c.JSON(http.StatusOK, echo.Map{"users": users})
+	return c.JSON(http.StatusOK, users)
 }
 
 func (uc *UserController) GetUserByID(c echo.Context) error {
-	ID := c.Param("id")
-	user, err := uc.UserService.GetUserByID(ID)
+	id, err := strconv.ParseUint(c.Param("id"), 10, 64)
 	if err != nil {
-		return c.JSON(http.StatusNotFound, echo.Map{"error": "User not found"})
+		return c.JSON(http.StatusBadRequest, "Invalid user ID")
 	}
-	return c.JSON(http.StatusOK, echo.Map{"user": user})
+
+	userID := uint(id)
+	user, err := uc.UserService.GetUserByID(userID)
+	if err != nil {
+		return c.JSON(http.StatusNotFound, "User not found")
+	}
+
+	return c.JSON(http.StatusOK, user)
 }
 
-func (uc *UserController) UpdateUser(c echo.Context) error {
-	ID := c.Param("id")
-	var newUser struct {
+func (uc *UserController) UpdateUserByID(c echo.Context) error {
+	id, err := strconv.ParseUint(c.Param("id"), 10, 64)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, "Invalid user ID")
+	}
+
+	userID := uint(id)
+	var updateUser struct {
 		Email    string `json:"email"`
 		Password string `json:"password"`
 	}
-	if err := c.Bind(&newUser); err != nil {
-		return c.JSON(http.StatusBadRequest, echo.Map{"error": "Failed to read body"})
+	if err := c.Bind(&updateUser); err != nil {
+		return err
 	}
-	updatedUser, err := uc.UserService.UpdateUser(ID, newUser.Email, newUser.Password)
-	if err != nil {
-		return c.JSON(http.StatusInternalServerError, echo.Map{"error": "Failed to update user"})
+
+	if err := uc.UserService.UpdateUserByID(userID, updateUser.Email, updateUser.Password); err != nil {
+		return c.JSON(http.StatusInternalServerError, "Failed to update user")
 	}
-	return c.JSON(http.StatusOK, echo.Map{"user": updatedUser})
+
+	return c.JSON(http.StatusOK, "User updated successfully")
 }
 
-func (uc *UserController) DeleteUser(c echo.Context) error {
-	ID := c.Param("id")
-	err := uc.UserService.DeleteUser(ID)
+func (uc *UserController) DeleteUserByID(c echo.Context) error {
+	id, err := strconv.ParseUint(c.Param("id"), 10, 64)
 	if err != nil {
-		return c.JSON(http.StatusNotFound, echo.Map{"error": "User not found"})
+		return c.JSON(http.StatusBadRequest, "Invalid user ID")
 	}
-	return c.JSON(http.StatusOK, echo.Map{"message": "User deleted successfully"})
+
+	userID := uint(id)
+	if err := uc.UserService.DeleteUserByID(userID); err != nil {
+		return c.JSON(http.StatusInternalServerError, "Failed to delete user")
+	}
+
+	return c.JSON(http.StatusOK, "User deleted successfully")
 }
