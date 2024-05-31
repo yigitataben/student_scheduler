@@ -5,22 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="4f10a104-5c28-4ea7-89c4-2e37f9a10cb5" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/requests/createLectureReq.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/requests/createPlanReq.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/requests/signUpReq.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/requests/updatePlanStatusReq.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/requests/updateUserReq.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/controllers/lectureController.go" beforeDir="false" afterPath="$PROJECT_DIR$/controllers/lectureController.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/controllers/planController.go" beforeDir="false" afterPath="$PROJECT_DIR$/controllers/planController.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/controllers/userController.go" beforeDir="false" afterPath="$PROJECT_DIR$/controllers/userController.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/lecture.go" beforeDir="false" afterPath="$PROJECT_DIR$/models/lecture.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/go.mod" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/models/plan.go" beforeDir="false" afterPath="$PROJECT_DIR$/models/plan.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/repositories/userRepository.go" beforeDir="false" afterPath="$PROJECT_DIR$/repositories/userRepository.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/routes/userRouter.go" beforeDir="false" afterPath="$PROJECT_DIR$/routes/userRouter.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/lectureService.go" beforeDir="false" afterPath="$PROJECT_DIR$/services/lectureService.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/planService.go" beforeDir="false" afterPath="$PROJECT_DIR$/services/planService.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/userService.go" beforeDir="false" afterPath="$PROJECT_DIR$/services/userService.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/requests/createPlanReq.go" beforeDir="false" afterPath="$PROJECT_DIR$/requests/createPlanReq.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -63,6 +52,7 @@
   <component name="PropertiesComponent">{
   &quot;keyToString&quot;: {
     &quot;DefaultGoTemplateProperty&quot;: &quot;Go File&quot;,
+    &quot;Go Build.go build main.go.executor&quot;: &quot;Run&quot;,
     &quot;Makefile Target.all.executor&quot;: &quot;Run&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.go.formatter.settings.were.checked&quot;: &quot;true&quot;,
@@ -88,6 +78,22 @@
     <key name="MoveFile.RECENT_KEYS">
       <recent name="D:\Workspace\student_scheduler\" />
     </key>
+  </component>
+  <component name="RunManager">
+    <configuration name="go build main.go" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
+      <module name="student_scheduler" />
+      <working_directory value="$PROJECT_DIR$" />
+      <kind value="FILE" />
+      <package value="github.com/yigitataben/student_scheduler" />
+      <directory value="$PROJECT_DIR$" />
+      <filePath value="$PROJECT_DIR$/main.go" />
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Go Build.go build main.go" />
+      </list>
+    </recent_temporary>
   </component>
   <component name="SharedIndexes">
     <attachedChunks>

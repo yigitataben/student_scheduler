@@ -53,7 +53,7 @@ func (ur *UserRepository) UpdateUserByID(id uint, email, password string) error 
 }
 
 func (ur *UserRepository) DeleteUserByID(id uint) error {
-	result := ur.DB.Delete(&models.User{}, id)
+	result := ur.DB.Unscoped().Delete(&models.User{}, id)
 	if result.Error != nil {
 		return result.Error
 	}
