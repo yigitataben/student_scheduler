@@ -23,10 +23,10 @@ func NewPlanService(planRepository *repositories.PlanRepository) *PlanService {
 
 func (s *PlanService) CreatePlan(planRequest requests.CreatePlanRequest) error {
 	plan := models.Plan{
-		LectureName: planRequest.LectureName,
-		UserID:      planRequest.UserID,
-		StartTime:   planRequest.StartTime,
-		EndTime:     planRequest.EndTime,
+		LectureID: planRequest.LectureID,
+		UserID:    planRequest.UserID,
+		StartTime: planRequest.StartTime,
+		EndTime:   planRequest.EndTime,
 	}
 	return s.PlanRepository.Create(&plan)
 }
@@ -54,7 +54,7 @@ func (s *PlanService) UpdatePlan(id string, newPlanData requests.CreatePlanReque
 		}
 		return nil, err
 	}
-	plan.LectureName = newPlanData.LectureName
+	plan.LectureID = newPlanData.LectureID
 	plan.UserID = newPlanData.UserID
 	plan.StartTime = newPlanData.StartTime
 	plan.EndTime = newPlanData.EndTime
