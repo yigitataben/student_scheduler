@@ -73,24 +73,22 @@ users to sign up, create lecture plans, manage their plans, and interact with th
 
     POST /signup: Sign up a new user.
     GET /users: Retrieve all users.
-    GET /users/:id: Retrieve a user by ID.
-    PUT /users/:id: Update a user's information.
-    DELETE /users/:id: Delete a user by ID.
+    GET /users/id: Retrieve a user by ID.
+    PUT /users/id: Update a user's information.
+    DELETE /users/id: Delete a user by ID.
 
 ### Lecture Endpoints
 
     POST /lectures: Create new lectures.
     GET /lectures: Retrieve all lectures.
-    GET /lectures/:id: Retrieve a lecture by ID.
-    DELETE /lectures/:id: Delete a lecture by ID.
 
 ### Plan Endpoints
 
     POST /plans: Create a new plan.
     GET /plans: Retrieve all plans.
-    GET /plans/:id: Retrieve a plan by ID.
-    PUT /plans/:id: Update a plan by ID.
-    DELETE /plans/:id: Delete a plan by ID.
+    GET /plans/id: Retrieve a plan by ID.
+    PUT /plans/id: Update a plan by ID.
+    DELETE /plans/id: Delete a plan by ID.
 
 ## Project Structure
 
