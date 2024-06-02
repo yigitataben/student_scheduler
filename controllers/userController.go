@@ -40,13 +40,12 @@ func (uc *UserController) GetAllUsers(c echo.Context) error {
 }
 
 func (uc *UserController) GetUserByID(c echo.Context) error {
-	id, err := strconv.ParseUint(c.Param("id"), 10, 64)
+	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, "Invalid user ID")
 	}
 
-	userID := uint(id)
-	user, err := uc.UserService.GetUserByID(userID)
+	user, err := uc.UserService.GetUserByID(id)
 	if err != nil {
 		return c.JSON(http.StatusNotFound, "User not found")
 	}
@@ -55,12 +54,11 @@ func (uc *UserController) GetUserByID(c echo.Context) error {
 }
 
 func (uc *UserController) UpdateUserByID(c echo.Context) error {
-	id, err := strconv.ParseUint(c.Param("id"), 10, 64)
+	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, "Invalid user ID")
 	}
 
-	userID := uint(id)
 	var updateUser struct {
 		Email    string `json:"email"`
 		Password string `json:"password"`
@@ -69,7 +67,7 @@ func (uc *UserController) UpdateUserByID(c echo.Context) error {
 		return err
 	}
 
-	if err := uc.UserService.UpdateUserByID(userID, updateUser.Email, updateUser.Password); err != nil {
+	if err := uc.UserService.UpdateUserByID(id, updateUser.Email, updateUser.Password); err != nil {
 		return c.JSON(http.StatusInternalServerError, "Failed to update user")
 	}
 
@@ -77,13 +75,12 @@ func (uc *UserController) UpdateUserByID(c echo.Context) error {
 }
 
 func (uc *UserController) DeleteUserByID(c echo.Context) error {
-	id, err := strconv.ParseUint(c.Param("id"), 10, 64)
+	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, "Invalid user ID")
 	}
 
-	userID := uint(id)
-	if err := uc.UserService.DeleteUserByID(userID); err != nil {
+	if err := uc.UserService.DeleteUserByID(id); err != nil {
 		return c.JSON(http.StatusInternalServerError, "Failed to delete user")
 	}
 

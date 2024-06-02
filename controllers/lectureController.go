@@ -1,8 +1,8 @@
 package controllers
 
 import (
-	"errors"
 	"net/http"
+	"strconv"
 
 	"github.com/labstack/echo/v4"
 	"github.com/yigitataben/student_scheduler/requests"
@@ -37,26 +37,49 @@ func (lc *LectureController) GetAllLectures(c echo.Context) error {
 	return c.JSON(http.StatusOK, lectures)
 }
 
-func (lc *LectureController) GetLecture(c echo.Context) error {
-	id := c.Param("id")
-	lecture, err := lc.LectureService.GetLecture(id)
+func (lc *LectureController) GetLectureByID(c echo.Context) error {
+	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
-		if errors.Is(err, services.ErrLectureNotFound) {
-			return c.JSON(http.StatusNotFound, echo.Map{"error": "Lecture not found"})
-		}
-		return c.JSON(http.StatusInternalServerError, echo.Map{"error": "Failed to fetch lecture"})
+		return c.JSON(http.StatusBadRequest, "Invalid user ID")
 	}
-	return c.JSON(http.StatusOK, lecture)
+
+	user, err := lc.LectureService.GetLectureByID(id)
+	if err != nil {
+		return c.JSON(http.StatusNotFound, "Lecture not found")
+	}
+
+	return c.JSON(http.StatusOK, user)
 }
 
-func (lc *LectureController) DeleteLecture(c echo.Context) error {
-	id := c.Param("id")
-	err := lc.LectureService.DeleteLecture(id)
+func (lc *LectureController) UpdateLectureByID(c echo.Context) error {
+	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
-		if errors.Is(err, services.ErrLectureNotFound) {
-			return c.JSON(http.StatusNotFound, echo.Map{"error": "Lecture not found"})
-		}
-		return c.JSON(http.StatusInternalServerError, echo.Map{"error": "Failed to delete lecture"})
+		return c.JSON(http.StatusBadRequest, "Invalid user ID")
 	}
-	return c.JSON(http.StatusOK, echo.Map{"message": "Lecture deleted successfully"})
+
+	var updateLecture struct {
+		LectureName string `json:"lecture_name"`
+	}
+	if err := c.Bind(&updateLecture); err != nil {
+		return err
+	}
+
+	if err := lc.LectureService.UpdateLectureByID(id, updateLecture.LectureName); err != nil {
+		return c.JSON(http.StatusInternalServerError, "Failed to update user")
+	}
+
+	return c.JSON(http.StatusOK, "Lecture updated successfully")
+}
+
+func (lc *LectureController) DeleteLectureByID(c echo.Context) error {
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, "Invalid user ID")
+	}
+
+	if err := lc.LectureService.DeleteLectureByID(id); err != nil {
+		return c.JSON(http.StatusInternalServerError, "Failed to delete user")
+	}
+
+	return c.JSON(http.StatusOK, "Lecture deleted successfully")
 }

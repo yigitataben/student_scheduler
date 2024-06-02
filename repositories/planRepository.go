@@ -1,7 +1,6 @@
 package repositories
 
 import (
-	"errors"
 	"github.com/yigitataben/student_scheduler/models"
 	"gorm.io/gorm"
 )
@@ -14,35 +13,47 @@ func NewPlanRepository(db *gorm.DB) *PlanRepository {
 	return &PlanRepository{DB: db}
 }
 
-func (r *PlanRepository) FindConflictingPlans(userID uint, startTime, endTime int64) ([]models.Plan, error) {
-	var existingPlans []models.Plan
-	err := r.DB.Where("student_id = ? AND start_time < ? AND end_time > ?", userID, endTime, startTime).Find(&existingPlans).Error
-	return existingPlans, err
+func (pr *PlanRepository) Create(plan *models.Plan) error {
+	return pr.DB.Create(plan).Error
 }
 
-func (r *PlanRepository) Create(plan *models.Plan) error {
-	return r.DB.Create(plan).Error
-}
-
-func (r *PlanRepository) FindByID(id string) (*models.Plan, error) {
-	var plan models.Plan
-	err := r.DB.First(&plan, id).Error
-	if errors.Is(err, gorm.ErrRecordNotFound) {
-		return nil, err
-	}
-	return &plan, err
-}
-
-func (r *PlanRepository) Save(plan *models.Plan) error {
-	return r.DB.Save(plan).Error
-}
-
-func (r *PlanRepository) FindAll() ([]models.Plan, error) {
+func (pr *PlanRepository) GetAllPlans() ([]models.Plan, error) {
 	var plans []models.Plan
-	err := r.DB.Order("created_at desc").Find(&plans).Error
+	err := pr.DB.Order("created_at desc").Find(&plans).Error
 	return plans, err
 }
 
-func (r *PlanRepository) Delete(plan *models.Plan) error {
-	return r.DB.Unscoped().Delete(plan).Error
+func (pr *PlanRepository) GetPlanByID(id int) (*models.Plan, error) {
+	plan := &models.Plan{}
+	result := pr.DB.First(plan, id)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	return plan, nil
+}
+
+func (pr *PlanRepository) UpdatePlanByID(id int, lectureID int, userID int, startTime string, endTime string, status string) error {
+	plan := &models.Plan{}
+	result := pr.DB.First(plan, id)
+	if result.Error != nil {
+		return result.Error
+	}
+	plan.LectureID = lectureID
+	plan.UserID = userID
+	plan.StartTime = startTime
+	plan.EndTime = endTime
+	plan.Status = status
+	result = pr.DB.Save(plan)
+	if result.Error != nil {
+		return result.Error
+	}
+	return nil
+}
+
+func (pr *PlanRepository) DeletePlanByID(id int) error {
+	result := pr.DB.Unscoped().Delete(&models.Plan{}, id)
+	if result.Error != nil {
+		return result.Error
+	}
+	return nil
 }

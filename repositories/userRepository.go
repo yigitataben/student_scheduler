@@ -1,13 +1,8 @@
 package repositories
 
 import (
-	"errors"
 	"github.com/yigitataben/student_scheduler/models"
 	"gorm.io/gorm"
-)
-
-var (
-	ErrUserRecordNotFound = errors.New("record not found")
 )
 
 type UserRepository struct {
@@ -28,7 +23,7 @@ func (ur *UserRepository) GetAllUsers() ([]models.User, error) {
 	return users, err
 }
 
-func (ur *UserRepository) GetUserByID(id uint) (*models.User, error) {
+func (ur *UserRepository) GetUserByID(id int) (*models.User, error) {
 	user := &models.User{}
 	result := ur.DB.First(user, id)
 	if result.Error != nil {
@@ -37,7 +32,7 @@ func (ur *UserRepository) GetUserByID(id uint) (*models.User, error) {
 	return user, nil
 }
 
-func (ur *UserRepository) UpdateUserByID(id uint, email, password string) error {
+func (ur *UserRepository) UpdateUserByID(id int, email, password string) error {
 	user := &models.User{}
 	result := ur.DB.First(user, id)
 	if result.Error != nil {
@@ -52,7 +47,7 @@ func (ur *UserRepository) UpdateUserByID(id uint, email, password string) error 
 	return nil
 }
 
-func (ur *UserRepository) DeleteUserByID(id uint) error {
+func (ur *UserRepository) DeleteUserByID(id int) error {
 	result := ur.DB.Unscoped().Delete(&models.User{}, id)
 	if result.Error != nil {
 		return result.Error

@@ -1,8 +1,11 @@
 package models
 
-import "gorm.io/gorm"
+import (
+	"time"
+)
 
 type Lecture struct {
-	gorm.Model
+	ID          int `gorm:"primary_key;AUTO_INCREMENT"`
+	CreatedAt   time.Time
 	LectureName string `gorm:"unique;not null"`
 }

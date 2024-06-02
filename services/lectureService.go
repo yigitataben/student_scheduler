@@ -1,14 +1,10 @@
 package services
 
 import (
-	"errors"
-
 	"github.com/yigitataben/student_scheduler/models"
 	"github.com/yigitataben/student_scheduler/repositories"
 	"github.com/yigitataben/student_scheduler/requests"
 )
-
-var ErrLectureNotFound = errors.New("lecture not found")
 
 type LectureService struct {
 	LectureRepository *repositories.LectureRepository
@@ -18,39 +14,29 @@ func NewLectureService(lectureRepository *repositories.LectureRepository) *Lectu
 	return &LectureService{LectureRepository: lectureRepository}
 }
 
-func (s *LectureService) CreateLectures(lectureRequests []requests.CreateLectureRequest) error {
+func (ls *LectureService) CreateLectures(lectureRequests []requests.CreateLectureRequest) error {
 	var lectures []models.Lecture
-	for _, input := range lectureRequests {
+	for _, request := range lectureRequests {
 		lecture := models.Lecture{
-			LectureName: input.LectureName,
+			LectureName: request.LectureName,
 		}
 		lectures = append(lectures, lecture)
 	}
-	return s.LectureRepository.Create(lectures)
+	return ls.LectureRepository.Create(lectures)
 }
 
-func (s *LectureService) GetAllLectures() ([]models.Lecture, error) {
-	return s.LectureRepository.FindAll()
+func (ls *LectureService) GetAllLectures() ([]models.Lecture, error) {
+	return ls.LectureRepository.GetAllLectures()
 }
 
-func (s *LectureService) GetLecture(id string) (*models.Lecture, error) {
-	lecture, err := s.LectureRepository.FindByID(id)
-	if err != nil {
-		if errors.Is(err, repositories.ErrLectureRecordNotFound) {
-			return nil, ErrLectureNotFound
-		}
-		return nil, err
-	}
-	return lecture, nil
+func (ls *LectureService) GetLectureByID(id int) (*models.Lecture, error) {
+	return ls.LectureRepository.GetLectureByID(id)
 }
 
-func (s *LectureService) DeleteLecture(id string) error {
-	err := s.LectureRepository.Delete(id)
-	if err != nil {
-		if errors.Is(err, repositories.ErrLectureRecordNotFound) {
-			return ErrLectureNotFound
-		}
-		return err
-	}
-	return nil
+func (ls *LectureService) UpdateLectureByID(id int, lectureName string) error {
+	return ls.LectureRepository.UpdateLectureByID(id, lectureName)
+}
+
+func (ls *LectureService) DeleteLectureByID(id int) error {
+	return ls.LectureRepository.DeleteLectureByID(id)
 }

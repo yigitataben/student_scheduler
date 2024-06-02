@@ -1,13 +1,8 @@
 package services
 
 import (
-	"errors"
 	"github.com/yigitataben/student_scheduler/models"
 	"github.com/yigitataben/student_scheduler/repositories"
-)
-
-var (
-	ErrUserNotFound = errors.New("user not found")
 )
 
 type UserService struct {
@@ -30,14 +25,14 @@ func (us *UserService) GetAllUsers() ([]models.User, error) {
 	return us.UserRepository.GetAllUsers()
 }
 
-func (us *UserService) GetUserByID(id uint) (*models.User, error) {
+func (us *UserService) GetUserByID(id int) (*models.User, error) {
 	return us.UserRepository.GetUserByID(id)
 }
 
-func (us *UserService) UpdateUserByID(id uint, email, password string) error {
+func (us *UserService) UpdateUserByID(id int, email, password string) error {
 	return us.UserRepository.UpdateUserByID(id, email, password)
 }
 
-func (us *UserService) DeleteUserByID(id uint) error {
+func (us *UserService) DeleteUserByID(id int) error {
 	return us.UserRepository.DeleteUserByID(id)
 }

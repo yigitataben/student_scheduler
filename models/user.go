@@ -1,9 +1,10 @@
 package models
 
-import "gorm.io/gorm"
+import "time"
 
 type User struct {
-	gorm.Model
-	Email    string `gorm:"unique;not null"`
-	Password string `gorm:"not null"`
+	ID        int `gorm:"primary_key;AUTO_INCREMENT"`
+	CreatedAt time.Time
+	Email     string `gorm:"unique;not null"`
+	Password  string `gorm:"not null"`
 }

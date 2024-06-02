@@ -1,16 +1,8 @@
 package services
 
 import (
-	"errors"
-	"gorm.io/gorm"
-
 	"github.com/yigitataben/student_scheduler/models"
 	"github.com/yigitataben/student_scheduler/repositories"
-	"github.com/yigitataben/student_scheduler/requests"
-)
-
-var (
-	ErrPlanNotFound = errors.New("plan not found")
 )
 
 type PlanService struct {
@@ -21,57 +13,29 @@ func NewPlanService(planRepository *repositories.PlanRepository) *PlanService {
 	return &PlanService{PlanRepository: planRepository}
 }
 
-func (s *PlanService) CreatePlan(planRequest requests.CreatePlanRequest) error {
+func (ps *PlanService) CreatePlan(LectureID int, UserID int, StartTime string, EndTime string, Status string) error {
 	plan := models.Plan{
-		LectureID: planRequest.LectureID,
-		UserID:    planRequest.UserID,
-		StartTime: planRequest.StartTime,
-		EndTime:   planRequest.EndTime,
+		LectureID: LectureID,
+		UserID:    UserID,
+		StartTime: StartTime,
+		EndTime:   EndTime,
+		Status:    Status,
 	}
-	return s.PlanRepository.Create(&plan)
+	return ps.PlanRepository.Create(&plan)
 }
 
-func (s *PlanService) GetAllPlans() ([]models.Plan, error) {
-	return s.PlanRepository.FindAll()
+func (ps *PlanService) GetAllPlans() ([]models.Plan, error) {
+	return ps.PlanRepository.GetAllPlans()
 }
 
-func (s *PlanService) GetPlanByID(id string) (*models.Plan, error) {
-	plan, err := s.PlanRepository.FindByID(id)
-	if err != nil {
-		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return nil, ErrPlanNotFound
-		}
-		return nil, err
-	}
-	return plan, nil
+func (ps *PlanService) GetPlanByID(id int) (*models.Plan, error) {
+	return ps.PlanRepository.GetPlanByID(id)
 }
 
-func (s *PlanService) UpdatePlan(id string, newPlanData requests.CreatePlanRequest) (*models.Plan, error) {
-	plan, err := s.PlanRepository.FindByID(id)
-	if err != nil {
-		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return nil, ErrPlanNotFound
-		}
-		return nil, err
-	}
-	plan.LectureID = newPlanData.LectureID
-	plan.UserID = newPlanData.UserID
-	plan.StartTime = newPlanData.StartTime
-	plan.EndTime = newPlanData.EndTime
-	err = s.PlanRepository.Save(plan)
-	if err != nil {
-		return nil, err
-	}
-	return plan, nil
+func (ps *PlanService) UpdatePlanByID(id int, lectureID int, userID int, startTime string, endTime string, status string) error {
+	return ps.PlanRepository.UpdatePlanByID(id, lectureID, userID, startTime, endTime, status)
 }
 
-func (s *PlanService) DeletePlan(id string) error {
-	plan, err := s.PlanRepository.FindByID(id)
-	if err != nil {
-		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return ErrPlanNotFound
-		}
-		return err
-	}
-	return s.PlanRepository.Delete(plan)
+func (ps *PlanService) DeletePlanByID(id int) error {
+	return ps.PlanRepository.DeletePlanByID(id)
 }

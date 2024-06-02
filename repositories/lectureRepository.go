@@ -1,13 +1,8 @@
 package repositories
 
 import (
-	"errors"
 	"github.com/yigitataben/student_scheduler/models"
 	"gorm.io/gorm"
-)
-
-var (
-	ErrLectureRecordNotFound = errors.New("record not found")
 )
 
 type LectureRepository struct {
@@ -18,30 +13,43 @@ func NewLectureRepository(db *gorm.DB) *LectureRepository {
 	return &LectureRepository{DB: db}
 }
 
-func (r *LectureRepository) Create(lectures []models.Lecture) error {
-	return r.DB.Create(&lectures).Error
+func (lr *LectureRepository) Create(lectures []models.Lecture) error {
+	return lr.DB.Create(&lectures).Error
 }
 
-func (r *LectureRepository) FindAll() ([]models.Lecture, error) {
-	var lectures []models.Lecture
-	err := r.DB.Order("id asc").Find(&lectures).Error
-	return lectures, err
+func (lr *LectureRepository) GetAllLectures() ([]models.Lecture, error) {
+	var users []models.Lecture
+	err := lr.DB.Order("created_at desc").Find(&users).Error
+	return users, err
 }
 
-func (r *LectureRepository) FindByID(id string) (*models.Lecture, error) {
-	var lecture models.Lecture
-	err := r.DB.First(&lecture, id).Error
-	if errors.Is(err, gorm.ErrRecordNotFound) {
-		return nil, ErrLectureRecordNotFound
+func (lr *LectureRepository) GetLectureByID(id int) (*models.Lecture, error) {
+	lecture := &models.Lecture{}
+	result := lr.DB.First(lecture, id)
+	if result.Error != nil {
+		return nil, result.Error
 	}
-	return &lecture, err
+	return lecture, nil
 }
 
-func (r *LectureRepository) Delete(id string) error {
-	var lecture models.Lecture
-	err := r.DB.First(&lecture, id).Error
-	if errors.Is(err, gorm.ErrRecordNotFound) {
-		return ErrLectureRecordNotFound
+func (lr *LectureRepository) UpdateLectureByID(id int, lectureName string) error {
+	lecture := &models.Lecture{}
+	result := lr.DB.First(lecture, id)
+	if result.Error != nil {
+		return result.Error
 	}
-	return r.DB.Unscoped().Delete(&lecture).Error
+	lecture.LectureName = lectureName
+	result = lr.DB.Save(lecture)
+	if result.Error != nil {
+		return result.Error
+	}
+	return nil
+}
+
+func (lr *LectureRepository) DeleteLectureByID(id int) error {
+	result := lr.DB.Unscoped().Delete(&models.Lecture{}, id)
+	if result.Error != nil {
+		return result.Error
+	}
+	return nil
 }
