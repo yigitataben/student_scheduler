@@ -19,13 +19,13 @@ func (pr *PlanRepository) Create(plan *models.Plan) error {
 
 func (pr *PlanRepository) GetAllPlans() ([]models.Plan, error) {
 	var plans []models.Plan
-	err := pr.DB.Order("created_at desc").Find(&plans).Error
+	err := pr.DB.Preload("Lecture").Preload("User").Order("created_at desc").Find(&plans).Error
 	return plans, err
 }
 
 func (pr *PlanRepository) GetPlanByID(id int) (*models.Plan, error) {
 	plan := &models.Plan{}
-	result := pr.DB.First(plan, id)
+	result := pr.DB.Preload("Lecture").Preload("User").First(&plan, id)
 	if result.Error != nil {
 		return nil, result.Error
 	}
